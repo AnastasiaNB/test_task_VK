@@ -103,5 +103,8 @@ DJOSER = {
     'HIDE_USERS': False,
     'PERMISSIONS': {
         'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly']
+    },
+    'SERIALIZERS': {
+        'user': 'friends.serializers.CustomUserSerializer',
     }
 }
