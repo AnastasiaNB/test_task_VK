@@ -1,5 +1,6 @@
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
+
 from friends.views import CustomUserViewSet, FriendsView
 
 router = SimpleRouter()

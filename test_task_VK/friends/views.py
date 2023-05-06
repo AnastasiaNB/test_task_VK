@@ -1,11 +1,10 @@
 from djoser.views import UserViewSet
-from rest_framework import views
-from rest_framework import status
-from rest_framework import permissions
+from rest_framework import permissions, status, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from friends.serializers import FriendRequestSerializer
+
 from friends.models import FriendRequest, Status, User
+from friends.serializers import FriendRequestSerializer
 
 
 class CustomUserViewSet(UserViewSet):
@@ -70,7 +69,9 @@ class FriendsView(views.APIView):
     def post(self, request, *args, **kwargs):
         if request.user.id == kwargs['id']:
             return Response(
-                data={'message': 'You can not send friend request to yourself'},
+                data={
+                    'message': 'You can not send friend request to yourself'
+                },
                 status=status.HTTP_403_FORBIDDEN
             )
         data = {
@@ -118,4 +119,3 @@ class FriendsView(views.APIView):
         except FriendRequest.DoesNotExist:
             pass
         return Response(status=status.HTTP_204_NO_CONTENT)
-
