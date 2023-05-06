@@ -19,6 +19,26 @@ class CustomUserViewSet(UserViewSet):
         data = [self.get_serializer(friend).data for friend in friends]
         return Response(data=data, status=status.HTTP_200_OK)
 
+    @action(["get"], detail=False)
+    def my_followers(self, request, *args, **kwargs):
+        friendrequests = FriendRequest.objects.filter(
+            user_to=request.user,
+            status=Status.objects.get(id=1)
+        )
+        friends = [friendrequest.user_from for friendrequest in friendrequests]
+        data = [self.get_serializer(friend).data for friend in friends]
+        return Response(data=data, status=status.HTTP_200_OK)
+
+    @action(["get"], detail=False)
+    def i_follow(self, request, *args, **kwargs):
+        friendrequests = FriendRequest.objects.filter(
+            user_from=request.user,
+            status=Status.objects.get(id=1)
+        )
+        friends = [friendrequest.user_to for friendrequest in friendrequests]
+        data = [self.get_serializer(friend).data for friend in friends]
+        return Response(data=data, status=status.HTTP_200_OK)
+
     def activation(self, request, *args, **kwargs):
         pass
 
@@ -48,6 +68,11 @@ class FriendsView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
+        if request.user.id == kwargs['id']:
+            return Response(
+                data={'message': 'You can not send friend request to yourself'},
+                status=status.HTTP_403_FORBIDDEN
+            )
         data = {
             'user_from': request.user.id,
             'user_to': kwargs['id'],
@@ -73,10 +98,16 @@ class FriendsView(views.APIView):
 
     def delete(self, request, *args, **kwargs):
         user_to = User.objects.get(id=kwargs['id'])
-        FriendRequest.objects.get(
-            user_from=request.user,
-            user_to=user_to
-        ).delete()
+        try:
+            FriendRequest.objects.get(
+                user_from=request.user,
+                user_to=user_to
+            ).delete()
+        except FriendRequest.DoesNotExist:
+            return Response(
+                data={'message': 'Object matching query does not exist'},
+                status=status.HTTP_404_NOT_FOUND
+            )
         try:
             friend_request = FriendRequest.objects.get(
                user_to=request.user,

@@ -1,0 +1,305 @@
+swagger: '2.0'
+info:
+  title: Test task VK API
+  description: Документация для тестового задания VK
+  version: v1
+host: localhost:8000
+schemes:
+  - http
+basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+paths:
+  /friends/{id}/:
+    post:
+      operationId: friends_create
+      description: ''
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - friends
+    delete:
+      operationId: friends_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - friends
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+  /token/login/:
+    post:
+      operationId: token_login_create
+      description: Use this endpoint to obtain user authentication token.
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/TokenCreate'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/TokenCreate'
+      tags:
+        - token
+    parameters: []
+  /token/logout/:
+    post:
+      operationId: token_logout_create
+      description: Use this endpoint to logout user (remove user authentication token).
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - token
+    parameters: []
+  /users/:
+    get:
+      operationId: users_list
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CustomUser'
+      tags:
+        - users
+    post:
+      operationId: users_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserCreate'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/UserCreate'
+      tags:
+        - users
+    parameters: []
+  /users/i_follow/:
+    get:
+      operationId: users_i_follow
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CustomUser'
+      tags:
+        - users
+    parameters: []
+  /users/me/:
+    get:
+      operationId: users_me_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+      tags:
+        - users
+    put:
+      operationId: users_me_update
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - users
+    patch:
+      operationId: users_me_partial_update
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+        - users
+    delete:
+      operationId: users_me_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - users
+    parameters: []
+  /users/my_followers/:
+    get:
+      operationId: users_my_followers
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CustomUser'
+      tags:
+        - users
+    parameters: []
+  /users/my_friends/:
+    get:
+      operationId: users_my_friends
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CustomUser'
+      tags:
+        - users
+    parameters: []
+  /users/{id}/:
+    get:
+      operationId: users_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/CustomUser'
+      tags:
+        - users
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+definitions:
+  TokenCreate:
+    type: object
+    properties:
+      password:
+        title: Password
+        type: string
+        minLength: 1
+      username:
+        title: Username
+        type: string
+        minLength: 1
+  CustomUser:
+    required:
+      - username
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      username:
+        title: Username
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        type: string
+        pattern: ^[\w.@+-]+$
+        maxLength: 150
+        minLength: 1
+      email:
+        title: Email address
+        type: string
+        format: email
+        maxLength: 254
+      status:
+        title: Status
+        type: string
+        readOnly: true
+  UserCreate:
+    required:
+      - username
+      - password
+    type: object
+    properties:
+      email:
+        title: Email address
+        type: string
+        format: email
+        maxLength: 254
+      username:
+        title: Username
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        type: string
+        pattern: ^[\w.@+-]+$
+        maxLength: 150
+        minLength: 1
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      password:
+        title: Password
+        type: string
+        minLength: 1
+  User:
+    type: object
+    properties:
+      email:
+        title: Email address
+        type: string
+        format: email
+        maxLength: 254
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      username:
+        title: Username
+        description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+          only.
+        type: string
+        readOnly: true
+        minLength: 1
